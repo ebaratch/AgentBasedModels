@@ -1,10 +1,10 @@
 package Testing;
 
 import Framework.GridsAndAgents.PDEGrid2D;
-import Framework.Gui.GuiGridVis;
+import Framework.Gui.GuiGrid;
 import Framework.Gui.GuiWindow;
 import Framework.Gui.TickTimer;
-import Framework.Utils;
+import Framework.Util;
 
 /**
  * Created by bravorr on 7/21/17.
@@ -16,7 +16,7 @@ public class ConvectionTest {
     static int time=0;
     public static void main(String[] args) {
         GuiWindow win=new GuiWindow("ConvectionTest",true);
-        GuiGridVis ggv=new GuiGridVis(x,y,20);
+        GuiGrid ggv=new GuiGrid(x,y,20);
         double[] xVels=new double[x*y];
         double[] yVels=new double[x*y];
         for (int xi = 0; xi < x; xi++) {
@@ -57,7 +57,7 @@ public class ConvectionTest {
         for (int i = 0; i < steps; i++) {
             trt.TickPause(time);
             ggv.DrawGridDiff(g,(val)->{
-                return Utils.HeatMapRBG(Utils.RescaleMinToMax(val, (double) 0, (double) 1));
+                return Util.HeatMapRBG(Util.ScaleMinToMax(val, (double) 0, (double) 1));
             });
             //g.ConvInhomogeneousSwap(xVels,yVels);
             g.Advection(0.001,0.001);

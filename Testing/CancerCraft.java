@@ -27,7 +27,7 @@ public class CancerCraft {
 //import Framework.Interfaces.*;
 //import Framework.Extensions.CircleForceAgent2;
 //import Framework.GridsAndAgents.AgentGrid2D;
-//import Framework.Gui.GuiGridVis;
+//import Framework.Gui.GuiGrid;
 //import Framework.Gui.GuiWindow;
 //
 //import java.util.ArrayList;

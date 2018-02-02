@@ -1,10 +1,10 @@
 package Testing;
 
 import Framework.GridsAndAgents.AgentGrid2D;
-import Framework.Gui.GridVisWindow;
+import Framework.Gui.GridWindow;
 import Framework.Extensions.SphericalAgent2D;
-import Framework.Gui.GuiGridVis;
-import Framework.Utils;
+import Framework.Gui.GuiGrid;
+import Framework.Util;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -39,15 +39,15 @@ public class ParticleExample extends AgentGrid2D<Particle> {
             p.Init();
         }
     }
-    public void Draw(GuiGridVis vis){
+    public void Draw(GuiGrid vis){
         for (int x = 0; x < xDim; x++) {
             for (int y = 0; y < yDim; y++) {
                 Particle p=GetAgent(x/5,y/5);
                 if(p!=null){
-                    vis.SetPix(x, y,Utils.RGB((double) 1, (double) 1, (double) 1));
+                    vis.SetPix(x, y, Util.RGB((double) 1, (double) 1, (double) 1));
                 }
                 else{
-                    vis.SetPix(x, y, Utils.RGB((double) 0, (double) 0, (double) 0));
+                    vis.SetPix(x, y, Util.RGB((double) 0, (double) 0, (double) 0));
                 }
             }
         }
@@ -63,7 +63,7 @@ public class ParticleExample extends AgentGrid2D<Particle> {
     }
 
     public static void main(String[] args) {
-        GridVisWindow win = new GridVisWindow("particles",50,50,1);
+        GridWindow win = new GridWindow("particles",50,50,1);
         ParticleExample ex=new ParticleExample(10,10);
         for (int i = 0; i < 1000; i++) {
             win.TickPause(100);

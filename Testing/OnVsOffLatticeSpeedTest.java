@@ -3,28 +3,29 @@ package Testing;
 import Framework.Extensions.SphericalAgent2D;
 import Framework.GridsAndAgents.AgentGrid2D;
 import Framework.GridsAndAgents.AgentSQ2Dunstackable;
+import Framework.Rand;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static Framework.Utils.*;
+import static Framework.Util.*;
 
 /**
  * Created by Rafael on 8/2/2017.
  */
 
 class OnLatticeGrid extends AgentGrid2D<OnLatticeCell> {
-    Random rn;
+    Rand rn;
     int[] mooreHood=MooreHood(false);
     int[] validLocs=new int[mooreHood.length/2];
     OnLatticeGrid(int x,int y,int pop){
         super(x,y,OnLatticeCell.class);
         int[] popIs=new int[length];
-        rn=new Random();
+        rn=new Rand();
         for (int i = 0; i < length; i++) {
             popIs[i]=i;
         }
-        Shuffle(popIs,length,pop,rn);
+        rn.Shuffle(popIs, length, pop);
         for (int i = 0; i < pop; i++) {
             NewAgentSQ(popIs[i]);
         }
@@ -33,7 +34,7 @@ class OnLatticeGrid extends AgentGrid2D<OnLatticeCell> {
         for (OnLatticeCell c : this) {
             int nLocs= HoodToIs(mooreHood,validLocs,c.Xsq(),c.Ysq());
             nLocs=FindEmptyIs(validLocs,nLocs);
-            c.chosenI=validLocs[rn.nextInt(nLocs)];
+            c.chosenI=validLocs[rn.Int(nLocs)];
         }
     }
 }

@@ -1,11 +1,11 @@
 package Testing;
 
 import Framework.GridsAndAgents.PDEGrid2D;
-import Framework.Gui.GuiGridVis;
+import Framework.Gui.GuiGrid;
 import Framework.Gui.GuiLabel;
 import Framework.Gui.GuiWindow;
 import Framework.Gui.TickTimer;
-import Framework.Utils;
+import Framework.Util;
 
 public class ConvectionTest2 {
     static int sideLen=1000;
@@ -28,7 +28,7 @@ public class ConvectionTest2 {
     public static void main(String[] args) {
         PDEGrid2D g=new PDEGrid2D(sideLen,sideLen,false,false);
         GuiWindow win=new GuiWindow("Advection1stOrder Example",true);
-        GuiGridVis vis=new GuiGridVis(sideLen,sideLen,1);
+        GuiGrid vis=new GuiGrid(sideLen,sideLen,1);
         GuiLabel lbl=new GuiLabel("tick");
         TickTimer trt=new TickTimer();
         double[]diffRates=new double[g.length];
@@ -41,11 +41,11 @@ public class ConvectionTest2 {
             //g.Advection1stOrder(0.01,0);
             g.Diffusion(0.1,1);
             //g.MultiThread(4,(x,y,j)->{
-            //    Utils.Diffusion2(x,y,g.GetField(),g.GetSwapField(),g.xDim,g.yDim,0.1,true,1,false,false);
+            //    Util.Diffusion2(x,y,g.GetField(),g.GetSwapField(),g.xDim,g.yDim,0.1,true,1,false,false);
             //});
             g.Diffusion(0.1,1);
             vis.DrawGridDiff(g,(val)->{
-                return Utils.HeatMapRBG(Utils.RescaleMinToMax(val, (double) 0, (double) 1));
+                return Util.HeatMapRBG(Util.ScaleMinToMax(val, (double) 0, (double) 1));
             });
             g.IncTick();
             lbl.SetText("tick "+g.GetTick());

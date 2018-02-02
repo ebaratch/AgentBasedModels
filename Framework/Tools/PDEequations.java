@@ -1,5 +1,5 @@
 package Framework.Tools;
-import static Framework.Utils.*;
+import static Framework.Util.*;
 
 /**
  * Created by Rafael on 10/14/2017.
@@ -411,43 +411,6 @@ public class PDEequations {
         }
         outGrid[i]=inGrid[i]-xFlux-yFlux-zFlux;
     }
-
-
-    public static void ConvectionFV1stOrder(int x, int y, final double[] inGrid, final double[] outGrid, int xDim, int yDim, double xVelp, double xVelm, double yVelp, double yVelm, boolean boundaryCond, double boundaryValue){
-        int i=x*yDim+y;
-        double xFluxp=0;
-        double xFluxm=0;
-        double yFluxp=0;
-        double yFluxm=0;
-        double prev=inGrid[i];
-        if(xVelp>0){
-            xFluxp=xVelp*(prev);
-        }
-        if(xVelp<0){
-            xFluxp=xVelp*(DisplacedX2D(x+1,y,inGrid,xDim,yDim,-1,boundaryCond,boundaryValue,true));
-        }
-        if(xVelm>0){
-            xFluxm=xVelm*(DisplacedX2D(x-1,y,inGrid,xDim,yDim,-1,boundaryCond,boundaryValue,true));
-        }
-        if(xVelm<0){
-            xFluxm=xVelm*(prev);
-        }
-        if(yVelp>0){
-            yFluxp=yVelp*(prev);
-        }
-        if(yVelp<0){
-            yFluxp=yVelp*(DisplacedY2D(x,y+1,inGrid,xDim,yDim,-1,boundaryCond,boundaryValue,true));
-        }
-        if(yVelm>0){
-            yFluxm=yVelm*(DisplacedY2D(x,y-1,inGrid,xDim,yDim,-1,boundaryCond,boundaryValue,true));
-        }
-        if(yVelm<0){
-            yFluxm=yVelm*(prev);
-        }
-        outGrid[i]=inGrid[i]-xFluxp+xFluxm-yFluxp+yFluxm;
-    }
-
-
 
     //final answer
     //b=1+4D

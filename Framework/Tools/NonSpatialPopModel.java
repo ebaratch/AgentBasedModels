@@ -1,34 +1,33 @@
 package Framework.Tools;
 
 
-import Framework.Gui.GuiGridVis;
-import Framework.Utils;
+import Framework.Gui.GuiGrid;
+import Framework.Rand;
+import Framework.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
-import static Framework.Utils.CategorialColor;
-import static Framework.Utils.RGB;
+import static Framework.Util.Bound;
+import static Framework.Util.RGB;
 
 /**
  * Created by Rafael on 10/10/2017.
  */
 public abstract class NonSpatialPopModel {
-    final static int TO_INDEX=0,WEIGHT=1,PROBABILITY=2,BLACK=RGB(0,0,0);
+    final static int TO_INDEX=0,WEIGHT=1,PROBABILITY=2,BLACK=RGB(0,0,0),BLUE=RGB(0,0,1);
     private final long[][]pops;
     private final double[][]moranTransitionsFinal;
     private final int[][]moranToIndicesFinal;
     private final long[][]moranTransitionPopsFinal;
     private final ArrayList<ArrayList<double[]>> moranTransitions;
     private int step;
-    private Binomial bn;
-    private Random rn;
+    public final Rand rn;
     private boolean initialized=false;
     private int drawStep;
     private long totalPop;
 
-    public NonSpatialPopModel(long[]initPops,Random rn){
+    public NonSpatialPopModel(long[]initPops,Rand rn){
         this.pops=new long[2][];
         this.pops[0]=initPops;
         for (int i = 0; i < initPops.length; i++) {
@@ -37,8 +36,7 @@ public abstract class NonSpatialPopModel {
             }
         }
         this.pops[1]=new long[initPops.length];
-        this.bn=new Binomial();
-        this.rn=new Random();
+        this.rn=rn;
         moranTransitions = new ArrayList<>();
         for (int i = 0; i < pops[0].length; i++) {
             moranTransitions.add(new ArrayList<>());
@@ -53,7 +51,7 @@ public abstract class NonSpatialPopModel {
     public long[]GetPops(){
         return pops[step%2];
     }
-    public long[]GetNextPops(){
+    public long[] GetPrevPops(){
         return pops[1-step%2];
     }
     public abstract double GetBirthProb(int iPop,long[]currPops,long totalPop);
@@ -97,7 +95,7 @@ public abstract class NonSpatialPopModel {
             }
         }
     }
-    public void DrawPops(GuiGridVis vis,int[]colors,long maxPop){
+    public void DrawPops(GuiGrid vis, int[]colors, long maxPop){
         long[]currPops=GetPops();
         if(colors.length<currPops.length+1){
             throw new IllegalArgumentException("need a color for each pop color, number of colors: "+colors.length+" number of pops: "+pops.length);
@@ -117,20 +115,18 @@ public abstract class NonSpatialPopModel {
         }
         drawStep++;
     }
-    public void DrawPops(GuiGridVis vis,long maxPop){
+    public void DrawPops(GuiGrid vis, long maxPop){
         long[]currPops=GetPops();
-        if(currPops.length>19){
-            throw new IllegalArgumentException("need a color for each pop color, number of colors: "+20+" number of pops: "+pops.length);
-        }
         int iCol=GetStep()%vis.xDim;
         for (int i = 0; i < vis.yDim; i++) {
             //clear the column
             vis.SetPix(iCol,i,BLACK);
         }
-        vis.SetPix(iCol,(int)((totalPop*1.0*vis.yDim)/maxPop),CategorialColor(0));
+        vis.SetPix(iCol,Bound((int)((totalPop*1.0*vis.yDim)/maxPop),0,vis.yDim-1),BLUE);
         for (int i = 0; i < currPops.length; i++) {
             if(currPops[i]<maxPop){
-                vis.SetPix(iCol,(int)((currPops[i]*1.0*vis.yDim)/maxPop),CategorialColor(i+1));
+                vis.SetPix(iCol,Bound((int)((currPops[i]*1.0*vis.yDim)/maxPop),0,vis.yDim-1),
+                        Util.HeatMapRGB((i+2.0)/(currPops.length+2.0)));
             }
         }
     }
@@ -139,12 +135,13 @@ public abstract class NonSpatialPopModel {
             Initialize();
         }
         long[]currPops=GetPops();
-        long[]nextPops=GetNextPops();
+        long[]nextPops= GetPrevPops();
 
         Arrays.fill(nextPops,0);//clear the next timestep array
 
-        totalPop=Utils.SumArray(currPops);
+        totalPop= Util.ArraySum(currPops);
         if(totalPop==0){
+            step++;
             return totalPop;
         }
         for (int i = 0; i < currPops.length; i++) {
@@ -157,8 +154,8 @@ public abstract class NonSpatialPopModel {
                 if (birthProb < 0||birthProb>1) {
                     throw new IllegalStateException("birth prob must be >=0! and <=1! birthProb: " + birthProb);
                 }
-                long nDeaths = bn.SampleLong(currPops[i], deathProb, rn);
-                long nBirths = bn.SampleLong(currPops[i], birthProb, rn);
+                long nDeaths = rn.Binomial(currPops[i], deathProb);
+                long nBirths = rn.Binomial(currPops[i], birthProb);
                 long nMuts = 0;
 
                 if (nBirths != 0) {
@@ -166,9 +163,9 @@ public abstract class NonSpatialPopModel {
                     if (mutProb < 0||mutProb>1) {
                         throw new IllegalStateException("mut prob must be >=0! and <=1! MUT_PROB: " + mutProb);
                     }
-                    nMuts = bn.SampleLong(nBirths, mutProb, rn);
+                    nMuts = rn.Binomial(nBirths, mutProb);
                     if (nMuts > 0) {
-                        Utils.Multinomial(moranTransitionsFinal[i], nMuts, bn, moranTransitionPopsFinal[i], rn);
+                        rn.Multinomial(moranTransitionsFinal[i], nMuts,  moranTransitionPopsFinal[i]);
                         for (int j = 0; j < moranToIndicesFinal[i].length; j++) {
                             nextPops[moranToIndicesFinal[i][j]] += moranTransitionPopsFinal[i][j];
                         }

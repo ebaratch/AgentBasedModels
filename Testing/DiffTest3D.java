@@ -1,13 +1,13 @@
 package Testing;
 
 import Framework.GridsAndAgents.PDEGrid3D;
-import Framework.Gui.GridVisWindow;
-import Framework.Utils;
+import Framework.Gui.GridWindow;
+import Framework.Util;
 
 public class DiffTest3D {
     public static void main(String[] args) {
         PDEGrid3D grid3D=new PDEGrid3D(100,10,100,false,false,false);
-        GridVisWindow win =new GridVisWindow("testing",100,100,5);
+        GridWindow win =new GridWindow("testing",100,100,5);
         while(true){
             //pick a random position to test
             grid3D.Set(345,1);
@@ -18,7 +18,7 @@ public class DiffTest3D {
             //}
             win.TickPause(10);
             grid3D.Diffusion(0.16,1,false,false,false);
-            win.DrawGridDiffXZ(grid3D,(val)-> Utils.HeatMapRGB(val, (double) 0, (double) 1));
+            win.DrawGridDiffXZ(grid3D,(val)-> Util.HeatMapRGB(val, (double) 0, (double) 1));
         }
 
     }

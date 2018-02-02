@@ -1,8 +1,9 @@
 package Testing;
 
 import Framework.GridsAndAgents.PDEGrid2D;
-import Framework.Gui.GridVisWindow;
-import static Framework.Utils.*;
+import Framework.Gui.GridWindow;
+
+import static Framework.Util.*;
 
 /**
  * Created by Rafael on 10/19/2017.
@@ -11,7 +12,7 @@ public class DiffusionExampleSimple {
     public static void main(String[] args) {
         int spaceScale = 25;
         int xDim = 50, yDim = 8;
-        GridVisWindow win = new GridVisWindow("diffusion ex", xDim, yDim, 5);
+        GridWindow win = new GridWindow("diffusion ex", xDim, yDim, 5);
         PDEGrid2D diff = new PDEGrid2D(xDim*spaceScale, yDim*spaceScale, true, true);
 
         //initial condition here

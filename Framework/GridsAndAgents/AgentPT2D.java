@@ -1,8 +1,11 @@
 package Framework.GridsAndAgents;
 
+import Framework.Interfaces.CoordsAction;
+import Framework.Interfaces.IndexAction;
+
 import java.util.ArrayList;
 
-import static Framework.Utils.*;
+import static Framework.Util.*;
 
 /**
  * extend the AgentPT2D class if you want agents that exist on a 2D continuous lattice

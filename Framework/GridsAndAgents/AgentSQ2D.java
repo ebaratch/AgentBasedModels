@@ -1,10 +1,13 @@
 package Framework.GridsAndAgents;
 
 
+import Framework.Interfaces.CoordsAction;
+import Framework.Interfaces.IndexAction;
+
 import java.util.ArrayList;
 
-import static Framework.Utils.InDim;
-import static Framework.Utils.ModWrap;
+import static Framework.Util.InDim;
+import static Framework.Util.ModWrap;
 
 /**
  * extend the AgentSQ2D class if you want agents that exist on a 2D discrete lattice

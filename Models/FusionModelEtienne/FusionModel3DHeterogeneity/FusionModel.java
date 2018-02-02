@@ -4,10 +4,11 @@ import Framework.Extensions.SphericalAgent2D;
 import Framework.Extensions.SphericalAgent3D;
 import Framework.GridsAndAgents.AgentGrid2D;
 import Framework.GridsAndAgents.AgentGrid3D;
-import Framework.Gui.Vis2DOpenGL;
-import Framework.Gui.Vis3DOpenGL;
-import Framework.Tools.BitGenome;
-import Framework.Utils;
+import Framework.Gui.Window2DOpenGL;
+import Framework.Gui.Window3DOpenGL;
+//import Framework.Tools.BitGenome;
+import Framework.Rand;
+import Framework.Util;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -16,7 +17,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static Framework.Utils.*;
+import static Framework.Util.*;
 
 class Dish extends AgentGrid3D<Cell> {
     final static int BLACK=RGB(0,0,0),RED=RGB(1,0,0),GREEN=RGB(0,1,0),YELLOW=RGB(1,1,0),BLUE=RGB(0,0,1),WHITE=RGB(1,1,1);
@@ -45,7 +46,7 @@ class Dish extends AgentGrid3D<Cell> {
 
     int fusionCt=0;
     //INTERNAL VARIABLES
-    Random rn=new Random();
+    Rand rn=new Rand();
     ArrayList<Cell> cellScratch=new ArrayList<>();
     double[] divCoordScratch=new double[3];
 
@@ -64,7 +65,7 @@ class Dish extends AgentGrid3D<Cell> {
             TypeRepresentants[i]=0;
         }
         for (int i = 0; i < startingPop; i++) {
-            Utils.RandomPointInSphere(startingRadius, startCoords, rn);
+            rn.RandomPointInSphere(startingRadius, startCoords);
             Cell c=NewAgentPT(startCoords[0]+xDim/2.0,startCoords[1]+yDim/2.0,startCoords[2]+zDim/2.0);
             if(i%2==0) {
                 //for (int j=0;j<GENE_NUMBER;j++) {
@@ -110,7 +111,7 @@ class Dish extends AgentGrid3D<Cell> {
         //int[] ScratchGenome=new int[GENE_NUMBER];
         int tempBit=0;
         for (int i=0;i<GENE_NUMBER;i++){
-            if(rn.nextDouble()<0.5) {
+            if(rn.Double()<0.5) {
                 tempBit = Genotype1[i];
                 //System.out.println("vrai");
                 Genotype1[i] = Genotype2[i];
@@ -288,7 +289,7 @@ class Cell extends SphericalAgent3D<Cell,Dish> {
         for (int i=0;i<G().GENE_NUMBER;i++){
             System.out.println("entries="+i+Genotype[i]);
         }
-        int indexMut=G().rn.nextInt(G().GENE_NUMBER);
+        int indexMut=G().rn.Int(G().GENE_NUMBER);
         if (Genotype[indexMut]==0){
             Genotype[indexMut]=1;
         }
@@ -317,14 +318,14 @@ class Cell extends SphericalAgent3D<Cell,Dish> {
         //getting valid fusion neighbors
         for (int i=0;i<G().cellScratch.size();i++) {
             Cell c=G().cellScratch.get(i);
-            if(!c.hybrid&&c!=this&&Utils.DistSquared(Xpt(),Ypt(),Zpt(),c.Xpt(),c.Ypt(),c.Zpt())<G().CELL_RAD*2){
+            if(!c.hybrid&&c!=this&&Util.DistSquared(Xpt(),Ypt(),Zpt(),c.Xpt(),c.Ypt(),c.Zpt())<G().CELL_RAD*2){
                 G().cellScratch.set(neighborCt,c);
                 neighborCt++;
             }
         }
         //fusing
-        if(neighborCt>0&&G().rn.nextDouble()<Utils.ProbScale(G().FUSION_PROB,neighborCt)){
-            G().Fusion(this,G().cellScratch.get(G().rn.nextInt(neighborCt)));
+        if(neighborCt>0&&G().rn.Double()<Util.ProbScale(G().FUSION_PROB,neighborCt)){
+            G().Fusion(this,G().cellScratch.get(G().rn.Int(neighborCt)));
             return true;
         }
         return false;
@@ -345,13 +346,13 @@ class Cell extends SphericalAgent3D<Cell,Dish> {
         ApplyFriction(G().FRICTION);
     }
     void Step(){
-        if(G().rn.nextDouble()<G().DEATH_PROB && hybrid==false){
+        if(G().rn.Double()<G().DEATH_PROB && hybrid==false){
             Dispose();
             return;
         }
-        if(G().rn.nextDouble()<G().DIVISION_PROB && hybrid==false){
+        if(G().rn.Double()<G().DIVISION_PROB && hybrid==false){
             Cell child=Divide(G().DIV_RADIUS,G().divCoordScratch,G().rn);
-            if(G().rn.nextDouble()<G().mutationProb){
+            if(G().rn.Double()<G().mutationProb){
                 child.Init(this.color,this.Genotype);
                 child.Mutate();
                 //child.MutColorChange(this,G().rn,0.1);
@@ -369,12 +370,12 @@ public class FusionModel {
     static int STARTING_POP = 1000;
     static double STARTING_RADIUS = 3.5;
     static int TIMESTEPS = 2000;
-    static float[] circleCoords = Utils.GenCirclePoints(1, 10);
+    static float[] circleCoords = Util.GenCirclePoints(1, 10);
 
     public static void main(String[] args) {
         //TickTimer trt=new TickRateTimer();
 
-        Vis3DOpenGL vis = new Vis3DOpenGL("Cell Fusion Visualization", 1000, 1000, SIDE_LEN, SIDE_LEN, SIDE_LEN);
+        Window3DOpenGL vis = new Window3DOpenGL("Cell Fusion Visualization", 1000, 1000, SIDE_LEN, SIDE_LEN, SIDE_LEN);
         Dish d = new Dish(SIDE_LEN, STARTING_POP, STARTING_RADIUS);
         double Shanon=0;
         //double Shanon = 0;
@@ -429,7 +430,7 @@ public class FusionModel {
 
 
 
-    static void DrawCells(Vis3DOpenGL vis,Dish d,String path,int i){
+    static void DrawCells(Window3DOpenGL vis,Dish d,String path,int i){
         vis.Clear(Dish.WHITE);
         for (Cell c:d) {
             //color "cytoplasm"

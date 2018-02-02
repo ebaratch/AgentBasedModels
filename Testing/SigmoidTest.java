@@ -1,12 +1,12 @@
 package Testing;
 
-import Framework.Gui.GridVisWindow;
+import Framework.Gui.GridWindow;
 
 /**
  * Created by rafael on 9/7/17.
  */
 public class SigmoidTest {
     public static void main(String[] args) {
-        GridVisWindow win=new GridVisWindow(100,100,10);
+        GridWindow win=new GridWindow(100,100,10);
     }
 }
