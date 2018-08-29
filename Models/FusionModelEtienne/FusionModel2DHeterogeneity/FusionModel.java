@@ -404,24 +404,24 @@ public class FusionModel {
         //}
 
         try {
-            File file = new File("/Users/baratcEA/work/Moffitt/Phoenix/Fusion/ResultsSpatial/Heterogeneity2D/Mutation/Shanon.txt");
-            PrintWriter printWriter = new PrintWriter(file);
+            //File file = new File("/Users/baratcEA/work/Moffitt/Phoenix/Fusion/ResultsSpatial/Heterogeneity2D/Mutation/Shanon.txt");
+            //PrintWriter printWriter = new PrintWriter(file);
 
             for (int i = 0; i < TIMESTEPS; i++) {
                 vis.TickPause(0);
                 d.Step();
 
+                //DrawCells(vis, d, "/Users/baratcEA/work/Moffitt/Phoenix/Fusion/ResultsSpatial/Heterogeneity2D/Mutation/", i);
                 DrawCells(vis, d, "/Users/baratcEA/work/Moffitt/Phoenix/Fusion/ResultsSpatial/Heterogeneity2D/Mutation/", i);
-
                 Shanon = d.ComputeShannon();
 
                 String line = "";
                 line = "" + i + "," + Shanon + "\n";
                 System.out.println("Shanon index=" + Shanon);
-                printWriter.print(line);
+                //printWriter.print(line);
             }
 
-            printWriter.close();
+            //printWriter.close();
         }// end try block
         catch (Exception e) {
             System.out.println(e.getClass());

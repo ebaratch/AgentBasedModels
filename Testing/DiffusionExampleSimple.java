@@ -38,7 +38,7 @@ public class DiffusionExampleSimple {
             win.TickPause(0);
             //step condition here
             for (int j = 0; j < spaceScale; j++) {
-                diff.Advection2ndLW(xVels, yVels);
+                diff.Advection(xVels, yVels);
             }
             //System.out.println(diff.GetAvg());
 
